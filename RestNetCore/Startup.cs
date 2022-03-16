@@ -7,9 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
+using RestNetCore.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace RestNetCore
@@ -24,8 +27,12 @@ namespace RestNetCore
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
+            //Used to list the Enum Types
+            services.AddMvc().AddJsonOptions(
+                options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
