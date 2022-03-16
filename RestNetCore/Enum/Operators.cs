@@ -13,6 +13,7 @@ namespace RestNetCore.Enum
         addition,
         subtraction,
         multiplication,
-        division
+        division,
+        mean
     }
 }

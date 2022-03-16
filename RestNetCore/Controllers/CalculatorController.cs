@@ -16,7 +16,7 @@ namespace RestNetCore.Controllers
             _logger = logger;
         }
 
-        [HttpGet("sum/{firstNumber}/{secundNumber}")]
+        [HttpGet("{firstNumber}/{secundNumber}")]
         public IActionResult Get(string firstNumber, string secundNumber, OperatorsType operators)
         {
             decimal sum;
@@ -28,11 +28,11 @@ namespace RestNetCore.Controllers
                     OperatorsType.subtraction => ConvertToDecimal(firstNumber) - ConvertToDecimal(secundNumber),
                     OperatorsType.multiplication => ConvertToDecimal(firstNumber) * ConvertToDecimal(secundNumber),
                     OperatorsType.division => ConvertToDecimal(firstNumber) / ConvertToDecimal(secundNumber),
+                    OperatorsType.mean => (ConvertToDecimal(firstNumber) + ConvertToDecimal(secundNumber)) /2,
                     _ => 0,
                 };
                 return Ok(sum.ToString());
             }
-
             return BadRequest("Invalid Input");
         }
 
