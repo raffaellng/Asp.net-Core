@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RestNetCore.Business;
 using RestNetCore.Model;
-using RestNetCore.Services.Implementations;
+
 
 namespace RestNetCore.Controllers
 {
@@ -8,11 +9,11 @@ namespace RestNetCore.Controllers
     [Route("api/[controller]")]
     public class PersonController : ControllerBase
     {
-        private IPersonService _personService;
+        private IPersonBusiness _personService;
 
-        public PersonController(IPersonService personService)
+        public PersonController(IPersonBusiness personBusiness)
         {
-            _personService = personService;
+            _personService = personBusiness;
         }
 
         [HttpGet]

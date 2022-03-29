@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RestNetCore.Enum;
-using RestNetCore.Services.Implementations;
 
 namespace RestNetCore.Controllers
 {
@@ -11,12 +10,10 @@ namespace RestNetCore.Controllers
     {
 
         private readonly ILogger<CalculatorController> _logger;
-        private IPersonService _personService;
 
-        public CalculatorController(ILogger<CalculatorController> logger, IPersonService personService)
+        public CalculatorController(ILogger<CalculatorController> logger)
         {
             _logger = logger;
-            _personService = personService;
         }
 
         [HttpGet("{firstNumber}/{secundNumber}")]

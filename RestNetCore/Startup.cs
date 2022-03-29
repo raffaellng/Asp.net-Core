@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using RestNetCore.Services;
-using RestNetCore.Services.Implementations;
+using RestNetCore.Business;
+using RestNetCore.Business.Implementations;
+using RestNetCore.Model.Context;
+using RestNetCore.Repository;
+using RestNetCore.Repository.Implementations;
 using System;
 using System.Text.Json.Serialization;
 
@@ -30,8 +34,15 @@ namespace RestNetCore
 
             services.AddControllers();
 
+            // Conection Db
+            var connection = Configuration["MySQLConnection:MySQLConnectionStrings"];
+            services.AddDbContext<MySQLContext>(options => options.UseMySql(connection));
+
             //Dependency Injection
-            services.AddScoped<IPersonService, PersonService>();
+            services.AddScoped<IPersonBusiness, PersonBusiness>();
+            services.AddScoped<IPersonRepository, PersonRepository>();
+
+            //Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestNetCore", Version = "v1" });
