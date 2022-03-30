@@ -1,9 +1,9 @@
 ﻿using RestNetCore.Model;
 using System.Collections.Generic;
 
-namespace RestNetCore.Services.Implementations
+namespace RestNetCore.Business
 {
-    public interface IPersonService
+    public interface IPersonBusiness
     {
         Person Create(Person person);
         Person FindById(long id);
