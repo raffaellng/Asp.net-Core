@@ -1,17 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RestNetCore.Model.Base;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestNetCore.Model
 {
     [Table("person")]
-    public class Person
+    public class Person : BaseEntity
     {
-        [Key]
-        [Required]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id")]
-        public long Id { get; set; }
-
         [Column("first_name")]
         public string FirstName { get; set; }
 

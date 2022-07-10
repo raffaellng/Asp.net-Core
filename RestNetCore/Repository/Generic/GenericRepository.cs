@@ -1,65 +1,67 @@
-﻿using RestNetCore.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using RestNetCore.Model.Base;
 using RestNetCore.Model.Context;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RestNetCore.Repository.Implementations
+namespace RestNetCore.Repository.Generic
 {
-    public class PersonRepository : IPersonRepository
+    public class GenericRepository<T> : IRepository<T> where T : BaseEntity
     {
-
         private MySQLContext _context;
+        private DbSet<T> dataset;
 
-        public PersonRepository(MySQLContext context)
+        public GenericRepository(MySQLContext context)
         {
             _context = context;
+            dataset = _context.Set<T>();
         }
 
-        public List<Person> FindByAll()
+        public List<T> FindByAll()
         {
-            return _context.Persons.ToList();
+            return dataset.ToList();
         }
 
-        public Person FindById(long id)
+        public T FindById(long id)
         {
-            return ExistsForGet(id);
+            return dataset.SingleOrDefault(p => p.Id.Equals(id));
         }
 
-        public Person Create(Person person)
+        public T Create(T item)
         {
             try
             {
-                _context.Add(person);
+                dataset.Add(item);
                 _context.SaveChanges();
+                return item;
             }
             catch (System.Exception)
             {
                 throw;
             }
-
-            return person;
         }
 
-        public Person Update(Person person)
+        public T Update(T item)
         {
-            if (!ExistsForUpdate(person.Id)) return new Person();
-
-            var result = ExistsForGet(person.Id);
+            var result = ExistsForGet(item.Id);
 
             if (result != null)
             {
                 try
                 {
-                    _context.Entry(result).CurrentValues.SetValues(person);
+                    _context.Entry(result).CurrentValues.SetValues(item);
                     _context.SaveChanges();
+                    return result;
                 }
                 catch (System.Exception)
                 {
                     throw;
                 }
             }
-
-            return person;
+            else
+            {
+                return null;
+            }
         }
 
         public void Delete(long id)
@@ -70,7 +72,7 @@ namespace RestNetCore.Repository.Implementations
             {
                 try
                 {
-                    _context.Persons.Remove(result);
+                    dataset.Remove(result);
                     _context.SaveChanges();
                 }
                 catch (System.Exception)
@@ -80,14 +82,14 @@ namespace RestNetCore.Repository.Implementations
             }
         }
 
-        private bool ExistsForUpdate(long id)
+        public bool Exists(long id)
         {
-            return _context.Persons.Any(p => p.Id.Equals(id));
+            return dataset.Any(p => p.Id.Equals(id));
         }
 
-        private Person ExistsForGet(long id)
+        private T ExistsForGet(long id)
         {
-            return _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
+            return dataset.SingleOrDefault(p => p.Id.Equals(id));
         }
     }
 }

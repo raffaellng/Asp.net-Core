@@ -1,17 +1,15 @@
 ﻿using RestNetCore.Model;
-using RestNetCore.Model.Context;
 using RestNetCore.Repository;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RestNetCore.Business.Implementations
 {
-    public class PersonBusiness : IPersonBusiness
+    public class PersonBusinessImplementation : IPersonBusiness
     {
 
-        private readonly IPersonRepository _repository;
+        private readonly IRepository<Person> _repository;
 
-        public PersonBusiness(IPersonRepository repository)
+        public PersonBusinessImplementation(IRepository<Person> repository)
         {
             _repository = repository;
         }
@@ -28,21 +26,12 @@ namespace RestNetCore.Business.Implementations
 
         public Person Create(Person person)
         {
-            try
-            {
-                _repository.Create(person);
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
-
-            return person;
+            return _repository.Create(person);
         }
 
         public Person Update(Person person)
         {
-            return _repository.Update(person); ;
+            return _repository.Update(person);
         }
 
         public void Delete(long id)
