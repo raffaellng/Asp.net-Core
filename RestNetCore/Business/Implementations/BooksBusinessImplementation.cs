@@ -1,4 +1,6 @@
-﻿using RestNetCore.Model;
+﻿using RestNetCore.Data.Convert.Implementantions;
+using RestNetCore.Data.VO;
+using RestNetCore.Model;
 using RestNetCore.Repository;
 using System.Collections.Generic;
 
@@ -8,30 +10,36 @@ namespace RestNetCore.Business.Implementations
     {
 
         private readonly IRepository<Books> _repository;
+        private readonly BooksConverter _converter;
 
         public BooksBusinessImplementation(IRepository<Books> repository)
         {
             _repository = repository;
+            _converter = new BooksConverter();
         }
 
-        public List<Books> FindByall()
+        public List<BooksVO> FindByall()
         {
-            return _repository.FindByAll();
+            return _converter.Parse(_repository.FindByAll());
         }
 
-        public Books FindById(long id)
+        public BooksVO FindById(long id)
         {
-            return _repository.FindById(id);
+            return _converter.Parse(_repository.FindById(id));
         }
 
-        public Books Create(Books books)
+        public BooksVO Create(BooksVO books)
         {
-            return _repository.Create(books);
+            var booksEntity = _converter.Parse(books);
+            booksEntity = _repository.Create(booksEntity);
+            return _converter.Parse(booksEntity);
         }
 
-        public Books Update(Books books)
+        public BooksVO Update(BooksVO books)
         {
-            return _repository.Update(books);
+            var booksEntity = _converter.Parse(books);
+            booksEntity = _repository.Update(booksEntity);
+            return _converter.Parse(booksEntity);
         }
 
         public void Delete(long id)

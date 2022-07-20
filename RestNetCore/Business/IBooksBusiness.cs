@@ -1,14 +1,14 @@
-﻿using RestNetCore.Model;
+﻿using RestNetCore.Data.VO;
 using System.Collections.Generic;
 
 namespace RestNetCore.Business
 {
     public interface IBooksBusiness
     {
-        Books Create(Books books);
-        Books FindById(long id);
-        List<Books> FindByall();
-        Books Update(Books books);
+        BooksVO Create(BooksVO books);
+        BooksVO FindById(long id);
+        List<BooksVO> FindByall();
+        BooksVO Update(BooksVO books);
         void Delete(long id);
     }
 }

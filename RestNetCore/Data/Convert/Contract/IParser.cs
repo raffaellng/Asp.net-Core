@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RestNetCore.Data.Contract
+namespace RestNetCore.Data.Convert.Contract
 {
     public interface IParser<O, D>
     {

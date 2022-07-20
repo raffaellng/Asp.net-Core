@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestNetCore.Business;
+using RestNetCore.Data.VO;
 using RestNetCore.Model;
 
 
@@ -32,14 +33,14 @@ namespace RestNetCore.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Books books)
+        public IActionResult Post([FromBody] BooksVO books)
         {
             if (books == null) return BadRequest();
             return Ok(_booksService.Create(books));
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Books books)
+        public IActionResult Put([FromBody] BooksVO books)
         {
             if (books == null) return BadRequest();
             return Ok(_booksService.Update(books));
