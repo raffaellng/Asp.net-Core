@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RestNetCore.Business;
 using RestNetCore.Data.VO;
+using RestNetCore.Hypermedia.Filters;
 using RestNetCore.Model;
 
 
 namespace RestNetCore.Controllers
 {
+    [ApiVersion("1")]
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize("Bearer")]
     public class PersonController : ControllerBase
     {
         private IPersonBusiness _personService;
@@ -18,12 +22,14 @@ namespace RestNetCore.Controllers
         }
 
         [HttpGet]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult GetAll()
         {
             return Ok(_personService.FindByall());
         }
 
         [HttpGet("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id)
         {
             var person = _personService.FindById(id);
@@ -33,6 +39,7 @@ namespace RestNetCore.Controllers
         }
 
         [HttpPost]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody] PersonVO person)
         {
             if (person == null) return BadRequest();
@@ -40,6 +47,7 @@ namespace RestNetCore.Controllers
         }
 
         [HttpPut]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody] PersonVO person)
         {
             if (person == null) return BadRequest();

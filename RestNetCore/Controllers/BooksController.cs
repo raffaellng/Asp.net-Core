@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RestNetCore.Business;
 using RestNetCore.Data.VO;
+using RestNetCore.Hypermedia.Filters;
 using RestNetCore.Model;
 
 
 namespace RestNetCore.Controllers
 {
+    [ApiVersion("1")]
     [ApiController]
+    [Authorize("Bearer")]
     [Route("api/[controller]")]
     public class BooksController : ControllerBase
     {
@@ -18,12 +22,14 @@ namespace RestNetCore.Controllers
         }
 
         [HttpGet]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult GetAll()
         {
             return Ok(_booksService.FindByall());
         }
 
         [HttpGet("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id)
         {
             var books = _booksService.FindById(id);
@@ -33,6 +39,7 @@ namespace RestNetCore.Controllers
         }
 
         [HttpPost]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody] BooksVO books)
         {
             if (books == null) return BadRequest();
@@ -40,6 +47,7 @@ namespace RestNetCore.Controllers
         }
 
         [HttpPut]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody] BooksVO books)
         {
             if (books == null) return BadRequest();
@@ -47,6 +55,7 @@ namespace RestNetCore.Controllers
         }
 
         [HttpDelete("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Delete(long id)
         {
             _booksService.Delete(id);
