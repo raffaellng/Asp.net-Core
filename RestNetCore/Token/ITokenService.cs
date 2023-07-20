@@ -6,7 +6,7 @@ namespace RestNetCore.Token
     public interface ITokenService
     {
         string GenerateAccessToken(IEnumerable<Claim> claims);
-        string GenerateRefrashToken();
+        string GenerateRefreshToken();
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }

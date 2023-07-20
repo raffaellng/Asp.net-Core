@@ -83,6 +83,7 @@ namespace RestNetCore
             services.AddMvc().AddJsonOptions(
                 options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+            //cross-origin
             services.AddCors(options => options.AddDefaultPolicy(builder =>
             {
                 builder.AllowAnyOrigin()

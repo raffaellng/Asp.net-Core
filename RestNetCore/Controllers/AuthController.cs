@@ -21,10 +21,10 @@ namespace RestNetCore.Controllers
         [Route("signin")]
         public IActionResult Signin([FromBody] UserVO user)
         {
-            if (user == null) return BadRequest("Ivalid client request");
+            if (user is null) return BadRequest("Ivalid client request");
             var token = _loginBusiness.ValidadeCredentials(user);
 
-            if (token == null) return Unauthorized();
+            if (token is null) return Unauthorized();
 
             return Ok(token);
         }
@@ -33,11 +33,9 @@ namespace RestNetCore.Controllers
         [Route("refresh")]
         public IActionResult Refresh([FromBody] TokenVO tokenVo)
         {
-            if (tokenVo == null) return BadRequest("Ivalid client request");
+            if (tokenVo is null) return BadRequest("Ivalid client request");
             var token = _loginBusiness.ValidadeCredentials(tokenVo);
-
-            if (token == null) return BadRequest("Ivalid client request");
-
+            if (token is null) return BadRequest("Ivalid client request");
             return Ok(token);
         }
 

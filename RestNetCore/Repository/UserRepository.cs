@@ -20,11 +20,12 @@ namespace RestNetCore.Repository
 
         public User ValidateCredentials(UserVO user)
         {
+            // Criptografia a senha para depois comparar a que está no banco
             var pass = ComputeHash(user.Password, new SHA256CryptoServiceProvider()).ToString();
             return _context.Users.FirstOrDefault(u => (u.UserName == user.UserName) && (u.Password == pass));
         }
 
-        public User RefrshUserInfo(User user)
+        public User RefreshUserInfo(User user)
         {
 
             if (_context.Users.Any(u => u.Id.Equals(user.Id))) return null;

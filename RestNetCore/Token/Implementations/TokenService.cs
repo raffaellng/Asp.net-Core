@@ -37,31 +37,33 @@ namespace RestNetCore.Token.Implementations
             return tokenString;
         }
 
-        public string GenerateRefrashToken()
+        public string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
-            using var rng = RandomNumberGenerator.Create(); 
+            using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
 
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
-            var tokenValidationParameters = new TokenValidationParameters { 
+            var tokenValidationParameters = new TokenValidationParameters
+            {
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.Secret)),
-                ValidateLifetime = false
-        };
+                ValidateLifetime = true
+            };
             var tokenhandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
 
-            var principal = tokenhandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            var principal = tokenhandler.ValidateToken(token, tokenValidationParameters, out securityToken);
             JwtSecurityToken jwtSecurityToken = securityToken as JwtSecurityToken;
             if (jwtSecurityToken == null ||
                 !jwtSecurityToken.Header.Alg.Equals(
                     SecurityAlgorithms.HmacSha256,
-                    StringComparison.InvariantCulture)) 
+                    StringComparison.InvariantCulture))
                 throw new SecurityTokenException("Invalid Token");
 
 

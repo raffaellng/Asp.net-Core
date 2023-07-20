@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.JsonWebTokens;
 using RestNetCore.Configurations;
 using RestNetCore.Data.VO;
+using RestNetCore.Model;
 using RestNetCore.Repository;
 using RestNetCore.Token;
 using System;
@@ -30,7 +31,7 @@ namespace RestNetCore.Business.Implementations
         public TokenVO ValidadeCredentials(UserVO userCredentials)
         {
             var user = _repository.ValidateCredentials(userCredentials);
-            if (user == null) return null;
+            if (user is null) return null;
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
@@ -38,23 +39,9 @@ namespace RestNetCore.Business.Implementations
             };
 
             var accessToken = "Bearer " + _tokenService.GenerateAccessToken(claims);
-            var refreshToken = _tokenService.GenerateRefrashToken();
+            var refreshToken = _tokenService.GenerateRefreshToken();
 
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(_configuration.DaysToExpiry);
-
-            _repository.RefrshUserInfo(user);
-
-            DateTime createDate = DateTime.Now;
-            DateTime expirationDate = createDate.AddMinutes(_configuration.Minutes);
-
-            return new TokenVO(
-                true,
-                createDate.ToString(DATE_FORMAT),
-                expirationDate.ToString(DATE_FORMAT),
-                accessToken,
-                refreshToken
-                );
+            return RefreshToke(user, accessToken, refreshToken);
         }
 
         public TokenVO ValidadeCredentials(TokenVO token)
@@ -66,16 +53,27 @@ namespace RestNetCore.Business.Implementations
             var userName = principal.Identity.Name;
             var user = _repository.ValidateCredentials(userName);
 
-            if (user == null || 
+            if (user is null || 
                 user.RefreshToken != refreshToken || 
                 user.RefreshTokenExpiryTime <= DateTime.Now) return null;
 
             accessToken = _tokenService.GenerateAccessToken(principal.Claims);
-            refreshToken = _tokenService.GenerateRefrashToken();
+            refreshToken = _tokenService.GenerateRefreshToken();
 
+            return RefreshToke(user, accessToken, refreshToken);
+        }
+
+        public bool RevokeToken(string userName)
+        {
+            return _repository.RevokeToken(userName);
+        }
+
+        private TokenVO RefreshToke(User user, string accessToken, string refreshToken)
+        {
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.Now.AddDays(_configuration.DaysToExpiry);
-            _repository.RefrshUserInfo(user);
+
+            _repository.RefreshUserInfo(user);
 
             DateTime createDate = DateTime.Now;
             DateTime expirationDate = createDate.AddMinutes(_configuration.Minutes);
@@ -87,11 +85,6 @@ namespace RestNetCore.Business.Implementations
                 accessToken,
                 refreshToken
                 );
-        }
-
-        public bool RevokeToken(string userName)
-        {
-            return _repository.RevokeToken(userName);
         }
     }
 }
